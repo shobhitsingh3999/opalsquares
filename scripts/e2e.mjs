@@ -154,7 +154,12 @@ try {
     check("listing: amenities, features and nearby", (await page.getByText("Rooftop green terrace").isVisible()) && (await page.getByText("Aqua Line Metro").isVisible()) && (await page.getByText("24/7 security").isVisible()));
     check("listing: no carpet-area drawing without a confirmed area", (await page.locator(".area").count()) === 0);
     check("listing: RERA hidden while unverified", (await page.getByRole("heading", { name: "RERA registration" }).count()) === 0);
-    check("listing: gallery shows the confirmed photo only", (await page.locator(".pgallery-main img").getAttribute("src"))?.includes("photo-1") && (await page.locator(".pgallery-thumbs").count()) === 0);
+    const thumbs = await page.locator(".pgallery-thumbs img").evaluateAll((els) => els.map((e) => e.getAttribute("src") ?? ""));
+    check("listing: gallery = developer render + site photo, posters held back",
+      thumbs.length === 2 && thumbs[0].includes("elevation") && thumbs[1].includes("photo-1") && !thumbs.some((t) => /photo-[23]/.test(t)));
+    check("listing: image credit shown", await page.getByText("Artist's impression · Harvin Realty").isVisible());
+    await page.getByRole("button", { name: "Next photograph" }).click();
+    check("listing: gallery next → site photo with its caption", (await page.getByText("2 of 2").isVisible()) && (await page.getByText("Site photo · construction in progress").isVisible()));
     check("listing: enquiry form locked to this listing", (await page.locator("#enquire input[name=property]").inputValue()) === "sunwest-homes-sector-107-noida");
     const wa = await page.locator("#enquire a.btn-wa").getAttribute("href");
     check("listing: WhatsApp message names the property", decodeURIComponent(wa ?? "").includes("Sunwest Homes"));

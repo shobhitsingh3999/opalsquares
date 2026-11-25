@@ -180,7 +180,8 @@ export const site: SiteConfig = {
       name: "Sunwest Homes",
       title: "3 BHK Builder Floor at Sunwest Homes",
       preview: false,
-      developer: null,
+      // Listed as the developer on the RealEstateIndia and Housing.com project pages. Confirm.
+      developer: "Harvin Realty",
       locality: "Sector 107",
       city: "Noida",
       propertyType: "Builder floor",
@@ -191,7 +192,22 @@ export const site: SiteConfig = {
       // Price and area pending confirmation (the source listing has conflicting figures).
       configurations: [{ label: "3 BHK", carpetAreaSqft: null, priceFromInr: null }],
       images: [
-        { src: "/images/listings/sunwest-homes/photo-1.jpg", alt: "Sunwest Homes, Sector 107, Noida, under construction", width: 600, height: 800 },
+        // Developer's official elevation render from the Sunwest Homes 107 project page
+        // (owner: Harvin Realty). Confirm you have permission to use it.
+        {
+          src: "/images/listings/sunwest-homes/elevation.jpg",
+          alt: "Sunwest Homes 107, Sector 107, Noida: artist's impression of the building",
+          width: 795,
+          height: 553,
+          credit: "Artist's impression · Harvin Realty",
+        },
+        {
+          src: "/images/listings/sunwest-homes/photo-1.jpg",
+          alt: "Sunwest Homes, Sector 107, Noida, under construction",
+          width: 600,
+          height: 800,
+          credit: "Site photo · construction in progress",
+        },
         // On hold: these two marketing images print area figures (3 BHK 2350–2450 sq ft,
         // 4 BHK 2950–3050 sq ft) that conflict with the source listing. Move them into
         // this list once the areas are confirmed:

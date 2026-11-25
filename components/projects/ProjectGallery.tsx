@@ -6,6 +6,9 @@ import type { SiteImage } from "@/lib/types";
 import { SMALL_IMAGE } from "@/lib/format";
 import { IconArrow } from "../Icons";
 
+/** Images narrower than this are shown whole (letterboxed) rather than upscaled to fill the wide frame. */
+const FILL_MIN_WIDTH = 1100;
+
 export default function ProjectGallery({ images, name }: { images: SiteImage[]; name: string }) {
   const [i, setI] = useState(0);
   const n = images.length;
@@ -26,7 +29,7 @@ export default function ProjectGallery({ images, name }: { images: SiteImage[]; 
       }}
     >
       {/* Small or portrait images are shown whole on a neutral background instead of being cropped or stretched. */}
-      <div className={`pgallery-main${img.width < SMALL_IMAGE || img.height > img.width ? " pgallery-contain" : ""}${img.width < SMALL_IMAGE ? " pgallery-small" : ""}`}>
+      <div className={`pgallery-main${img.width < FILL_MIN_WIDTH || img.height > img.width ? " pgallery-contain" : ""}${img.width < SMALL_IMAGE ? " pgallery-small" : ""}`}>
         <Image key={img.src} src={img.src} alt={img.alt} width={img.width} height={img.height} priority
           sizes={img.width < SMALL_IMAGE ? `${img.width}px` : "(min-width: 1320px) 1280px, 100vw"} />
         {n > 1 && (
@@ -40,6 +43,7 @@ export default function ProjectGallery({ images, name }: { images: SiteImage[]; 
             <p className="pgallery-count" aria-live="polite">{i + 1} of {n}</p>
           </>
         )}
+        {img.credit && <p className="pgallery-credit">{img.credit}</p>}
       </div>
       {n > 1 && (
         <ul className="pgallery-thumbs">

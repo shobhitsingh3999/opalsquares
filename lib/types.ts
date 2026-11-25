@@ -4,6 +4,8 @@ export type SiteImage = {
   alt: string;
   width: number;
   height: number;
+  /** Optional caption/credit shown under the image, e.g. "Artist's impression · Harvin Realty". */
+  credit?: string;
 };
 
 export type Configuration = {
