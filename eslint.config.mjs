@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Mirrored WordPress theme/plugin assets (third-party, unmodified).
+    "public/wp-content/**",
+    "public/wp-includes/**",
   ]),
 ]);
 

@@ -1,0 +1,12 @@
+{
+ "html": {
+  "class": "html-smooth-scroll"
+ },
+ "body": {
+  "class": "home wp-singular page-template-default page page-id-41 wp-theme-onepack   pxl-redux-page  body-default-font   heading-default-font   bd-px-header--transparent  woocommerce-layout-grid elementor-default elementor-kit-6 elementor-page elementor-page-41"
+ },
+ "wrapper": {
+  "id": "pxl-wapper",
+  "class": "pxl-wapper"
+ }
+}

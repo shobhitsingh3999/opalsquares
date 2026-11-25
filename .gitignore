@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Mirrored files of the licensed OnePack WordPress theme (used only by /original;
+# missing files are proxied from opalsquare.in). Kept out of the public repo.
+/public/wp-content/
+/public/wp-includes/
+
+# reference material
+/ref/
