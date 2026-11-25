@@ -100,29 +100,40 @@ Payload sent to the webhook:
 normalised to `+91XXXXXXXXXX`. A hidden honeypot field rejects simple bots. The button is locked while
 sending, and an identical request (same phone and property) is not forwarded twice within 10 minutes.
 
-## Before launch: replace the preview data
+## Data and what still needs confirming
 
-The site currently runs in **preview mode**: a banner says listings are samples, and search engines are
-told not to index it. Replace the following, then set `previewMode: false`:
+Content comes from the **Opal Square Properties Website Pack**, copied to `content/source/`
+(`website-data.json`, `image-sources.json`, `PACK-README.md`). That folder is never served or bundled.
 
-1. **All six projects** in `projects`. Their names, localities, prices, carpet areas, possession dates,
-   amenities and photos are placeholders. Set `preview: false` on each verified project.
-2. **Images.** Everything in `public/images/` was copied from the current opalsquare.in site. They are the
-   OnePack theme's demo renders, not Opal Square projects, and theme demo images are often not licensed for
-   live use. Replace them with your own licensed photos (update `hero.image`, `process`, each project's
-   `images`, and `imageCredits`).
-3. **Logo.** Done: generated from `public/IMG_3542.png` into `public/brand/`.
-4. **Contact details:** WhatsApp, Instagram and LinkedIn are set. Still empty: `phone` (Call buttons),
-   `email`, `officeAddress`, `hours`.
-5. **About copy, services, "Why Opal Square" points (`components/WhyUs.tsx`) and hero highlights.** They describe a typical buyer-side advisory; confirm they match what
-   Opal Square actually offers and charges.
-6. **FAQ answers.** These are general guidance. Check them against your process.
-7. **RERA details** for each project, once verified on the state portal.
-8. **Enquiry webhook** (`ENQUIRY_WEBHOOK_URL`).
-9. **Footer year** in `components/Footer.tsx` (fixed at 2026).
+On the site now: the About copy, services, service areas, property types, office address, map link and
+contact person; the **Sunwest Homes** 3 BHK builder floor listing (details, amenities, features, nearby,
+construction photo); and the highlighted projects **Cyberthum** and **EON** (Sector 140A).
 
-Never publish a price, RERA number, possession date, review or phone number you have not verified.
-Leave the field `null` instead.
+Deliberately kept off the site until confirmed (they stay only in `content/source/website-data.json`):
+
+1. **Sunwest Homes price and area.** Asking price ₹1.12 crore and booking amount ₹40 lakh are unconfirmed,
+   and the source gives conflicting areas and rates (6,500 sq ft at ₹1,723/sq ft vs 1,880–2,050 sq ft 3 BHK
+   at ₹5,999/sq ft). The page shows "Price on request" / "On request".
+2. **Sunwest photos 2 and 3** (in `public/images/listings/sunwest-homes/`). They are marketing posters that
+   print 3 BHK 2,350–2,450 sq ft and 4 BHK 2,950–3,050 sq ft, which conflict with the listing. Uncomment
+   them in `site.config.ts` once the areas are confirmed.
+3. **Cyberthum and EON** price ranges, configurations and RERA numbers (the directory only shows a RERA
+   badge). Their images are 200 px directory thumbnails; replace them with larger official images.
+4. **Directory claims**: 4.5 rating from 29 reviews, 7+ years' experience, team of up to 10. Not shown.
+5. **Company name**: the pack uses "Opal Square Properties" (directory: "Opalsquare Properties"); the logo
+   file reads "OpalSquare Realty". The site uses "Opal Square Properties". Confirm one.
+6. **Contact**: WhatsApp +91 70101 01295 is set. Still missing: a call number (`phone`), `email`, `hours`.
+7. **Banner and background images** (`public/images/hero.webp`, `project-*.webp`, `sketch.webp`,
+   `services.webp`, `visit.webp`, `process-4.webp`) are OnePack theme demo renders from the old site.
+   Replace them with your own photos.
+8. **Enquiry webhook** (`ENQUIRY_WEBHOOK_URL`) so online requests are delivered.
+9. **Privacy Policy and Terms** are drafts for legal review.
+
+When these are done, set `previewMode: false` in `site.config.ts` (removes the banner and lets search
+engines index the site). Search and filters on `/projects` turn on automatically at 5 or more items.
+
+Important: `site.config.ts` is bundled into the browser JavaScript. Never put unconfirmed figures or
+private notes in it, not even in fields that are not displayed.
 
 ## Project layout
 

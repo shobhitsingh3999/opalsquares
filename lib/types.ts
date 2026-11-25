@@ -31,7 +31,11 @@ export type ProjectStatus = "New launch" | "Under construction" | "Ready to move
 export type Project = {
   /** URL-safe id, unique. */
   slug: string;
+  /** "listing" = a specific property for sale; "project" = a highlighted development. */
+  kind: "listing" | "project";
   name: string;
+  /** Optional listing headline, e.g. "3 BHK Builder Floor at Sunwest Homes". */
+  title?: string;
   /** true = sample data. Shows a "Preview listing" tag. Set false only for verified projects. */
   preview: boolean;
   developer: string | null;
@@ -55,6 +59,14 @@ export type Project = {
     nearby: string[];
   };
   rera: Rera | null;
+  /** Extra facts shown on the property page, e.g. { label: "Facing", value: "Northwest" }. */
+  specs?: { label: string; value: string }[];
+  /** Development features reported for the project (shown separately from unit amenities). */
+  features?: string[];
+  /** Shown on the card and page while some details are unconfirmed. */
+  pendingNote?: string;
+  /** Where the data came from (public URL). Unconfirmed figures live in content/source/, not here. */
+  source?: { url: string };
 };
 
 export type Service = { title: string; description: string; tags: string[] };
@@ -72,7 +84,10 @@ export type SiteConfig = {
   /** Shows the preview banner across the site. Turn off once all content is verified. */
   previewMode: boolean;
   brand: {
+    /** Short name used in the interface, e.g. "Opal Square". */
     name: string;
+    /** Company name used in titles and legal text, e.g. "Opal Square Properties". */
+    legalName: string;
     /** Logo lockups for light and dark backgrounds, plus the square mark (favicon). null = text wordmark. */
     logo: { onLight: SiteImage; onDark: SiteImage; mark: SiteImage } | null;
     description: string;
@@ -92,6 +107,9 @@ export type SiteConfig = {
     email: string | null;
     officeAddress: string | null;
     hours: string | null;
+    contactPerson: string | null;
+    /** Google Maps link to the office. */
+    mapUrl: string | null;
     /** Profile links. null hides the icon. */
     social: { instagram: string | null; linkedin: string | null };
   };
@@ -99,6 +117,8 @@ export type SiteConfig = {
     statement: string;
     detail: string;
     services: Service[];
+    serviceAreas: string[];
+    propertyTypes: { residential: string[]; commercial: string[] };
   };
   /** "How it works" steps, in order. */
   process: ProcessStep[];

@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Services from "@/components/Services";
-import WhyUs from "@/components/WhyUs";
 import Process from "@/components/Process";
 import Faqs from "@/components/Faqs";
-import { CtaBand } from "@/components/home/HomeSections";
+import { CtaBand, PropertyTypes, ServiceAreas } from "@/components/home/HomeSections";
 
 export const metadata: Metadata = {
   title: "Services",
-  description: "Shortlisting, accompanied site visits, paperwork checks and booking support for home buyers.",
+  description: "Buying, selling, rentals and leasing, and property investment advisory in Noida and Greater Noida.",
 };
 
 export default function ServicesPage() {
@@ -16,12 +15,13 @@ export default function ServicesPage() {
     <>
       <PageHero
         title="Our services"
-        intro="One advisor works with you from the first shortlist to the day you book."
+        intro="Buying, selling, rentals and leasing, and property investment advice across residential and commercial property."
         crumbs={[{ label: "Services" }]}
         image="/images/project-10.webp"
       />
       <Services standalone />
-      <WhyUs />
+      <PropertyTypes />
+      <ServiceAreas />
       <Process />
       <Faqs limit={3} />
       <CtaBand />

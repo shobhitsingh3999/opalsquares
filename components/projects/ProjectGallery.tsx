@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import type { SiteImage } from "@/lib/types";
+import { SMALL_IMAGE } from "@/lib/format";
 import { IconArrow } from "../Icons";
 
 export default function ProjectGallery({ images, name }: { images: SiteImage[]; name: string }) {
@@ -24,8 +25,10 @@ export default function ProjectGallery({ images, name }: { images: SiteImage[]; 
         if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
       }}
     >
-      <div className="pgallery-main">
-        <Image key={img.src} src={img.src} alt={img.alt} width={img.width} height={img.height} priority sizes="(min-width: 1320px) 1280px, 100vw" />
+      {/* Small or portrait images are shown whole on a neutral background instead of being cropped or stretched. */}
+      <div className={`pgallery-main${img.width < SMALL_IMAGE || img.height > img.width ? " pgallery-contain" : ""}${img.width < SMALL_IMAGE ? " pgallery-small" : ""}`}>
+        <Image key={img.src} src={img.src} alt={img.alt} width={img.width} height={img.height} priority
+          sizes={img.width < SMALL_IMAGE ? `${img.width}px` : "(min-width: 1320px) 1280px, 100vw"} />
         {n > 1 && (
           <>
             <button type="button" className="pgallery-nav pgallery-prev" onClick={() => go(-1)} aria-label="Previous photograph">

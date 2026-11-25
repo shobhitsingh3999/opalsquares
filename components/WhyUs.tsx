@@ -1,25 +1,25 @@
-import { IconArea, IconDoc, IconShield, IconWalk } from "./Icons";
+import { IconArea, IconDoc, IconPin, IconWalk } from "./Icons";
 
 const POINTS = [
   {
-    Icon: IconArea,
-    title: "Carpet area first",
-    text: "We compare homes on RERA carpet area, the usable space inside your walls, not on super built-up figures.",
+    Icon: IconPin,
+    title: "Local office in Noida",
+    text: "Our office is in Sector 70, Noida, close to the markets we cover across Noida and Greater Noida.",
   },
   {
-    Icon: IconShield,
-    title: "RERA checked",
-    text: "Where a project is registered, we show the registration number and link to the official state portal.",
+    Icon: IconArea,
+    title: "Residential and commercial",
+    text: "Flats, builder floors, villas and plots, as well as shops, offices, showrooms and commercial land.",
   },
   {
     Icon: IconDoc,
-    title: "Full cost, upfront",
-    text: "Ask for the cost sheet before you visit: GST, stamp duty, registration, parking and deposits, line by line.",
+    title: "Buy, sell, rent or invest",
+    text: "One team for buying, selling, rentals and leasing, and property investment advice.",
   },
   {
     Icon: IconWalk,
-    title: "Visit with an advisor",
-    text: "We confirm availability with the developer, then meet you on site so the right questions get asked.",
+    title: "Site visits arranged",
+    text: "Tell us what you want to see. We arrange the visit and answer your questions on site.",
   },
 ];
 
@@ -30,9 +30,9 @@ export default function WhyUs() {
         <div className="section-head">
           <div>
             <p className="kicker">Why Opal Square</p>
-            <h2 id="why-title" className="h2">Buy with the full picture</h2>
+            <h2 id="why-title" className="h2">Why clients work with us</h2>
           </div>
-          <p className="section-lead">Four checks we run on every shortlist, so price and space mean the same thing across projects.</p>
+          <p className="section-lead">A Noida-based team for residential and commercial property.</p>
         </div>
         <ul className="why-grid">
           {POINTS.map(({ Icon, title, text }) => (

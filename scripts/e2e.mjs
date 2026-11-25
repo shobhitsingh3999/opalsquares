@@ -1,4 +1,4 @@
-// End-to-end checks for the Opal Square website. Run after `npm run build`:
+// End-to-end checks for the Opal Square Properties website. Run after `npm run build`:
 //   npm run test:e2e
 // Uses your installed Google Chrome (playwright-core, no browser download).
 // Starts two production servers: one with no enquiry backend, one pointed at a
@@ -55,11 +55,18 @@ try {
   // ---------- Every page renders, has a title and one h1 ----------
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    for (const path of ["/", "/projects", "/projects/sample-project-a", "/localities", "/services", "/about", "/contact", "/faqs", "/privacy-policy", "/terms"]) {
+    // Figures the data pack marks as unconfirmed or conflicting must never be published.
+    const HIDDEN = [/1\.12\s*(cr|crore)/i, /11200000/, /₹\s?40\s*lakh/i, /6,?500\s*sq/i, /1,?723/, /5,?999/, /2,?350/, /2,?950/, /4\.5\s*\/\s*5|29 reviews/i, /82\.47|5\.45 lakh|1\.63 crore/i];
+    for (const path of ["/", "/projects", "/projects/sunwest-homes-sector-107-noida", "/projects/cyberthum", "/projects/eon", "/localities", "/services", "/about", "/contact", "/faqs", "/privacy-policy", "/terms"]) {
       const res = await page.goto(`${A}${path}`);
       const h1 = await page.locator("h1:visible").count();
       const title = await page.title();
       check(`page ${path}: 200, one h1, titled`, res.status() === 200 && h1 === 1 && title.includes("Opal Square"), `status=${res.status()} h1=${h1}`);
+      const text = await page.locator("body").innerText();
+      const leaked = HIDDEN.filter((re) => re.test(text)).map(String);
+      check(`page ${path}: no unconfirmed figures shown`, leaked.length === 0, leaked.join(" "));
+      const broken = await page.$$eval("img", (els) => els.filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.currentSrc || i.src));
+      check(`page ${path}: all images load`, broken.length === 0, broken.join(", "));
     }
     const res404 = await page.goto(`${A}/this-does-not-exist`);
     check("unknown URL → branded 404", res404.status() === 404 && (await page.getByText("We couldn't find that page").isVisible()));
@@ -76,7 +83,7 @@ try {
   {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await ctx.newPage();
-    for (const path of ["/", "/projects", "/projects/sample-project-b", "/contact"]) {
+    for (const path of ["/", "/projects", "/projects/sunwest-homes-sector-107-noida", "/contact"]) {
       await page.goto(`${A}${path}`);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       check(`mobile ${path}: no horizontal overflow`, overflow <= 0, `${overflow}px`);
@@ -107,88 +114,63 @@ try {
       check(`nav "${label}" → ${path}, marked current`, page.url().endsWith(path) && current === "page");
     }
 
-    // Home hero search submits to /projects with filters.
+    // Home quick links (search and filters appear automatically at 5+ projects).
     await page.goto(`${A}/`);
-    const hero = page.locator(".hero-search");
-    await hero.getByLabel("Configuration").selectOption("2 BHK");
-    await hero.getByRole("button", { name: "Search" }).click();
-    await page.waitForURL("**/projects?**");
-    const cards = page.locator(".browser .card");
-    await page.waitForTimeout(300);
-    check("home search → /projects?config=2 BHK shows 3 projects", page.url().includes("config=2+BHK") && (await cards.count()) === 3, `${await cards.count()}`);
+    check("home: shows 1 property for sale and 2 highlighted projects",
+      (await page.locator("#listing-title").count()) === 1 && (await page.locator(".showcase").nth(0).locator(".card").count()) === 1 && (await page.locator(".showcase").nth(1).locator(".card").count()) === 2);
+    await page.locator(".hero-quick").getByRole("link", { name: /property for sale/ }).click();
+    await page.waitForURL("**/projects");
+    check("home quick link → /projects", page.url().endsWith("/projects"));
 
-    // Listing filters
-    await page.goto(`${A}/projects`);
-    const panel = page.locator("#filters-panel");
-    check("listing: 6 projects", (await cards.count()) === 6);
-    await panel.getByLabel("Locality").selectOption("Baner");
-    check("listing: locality=Baner → 1, URL updated", (await cards.count()) === 1 && page.url().includes("locality=Baner"));
-    await panel.getByRole("button", { name: "Clear all" }).click();
-    await panel.getByRole("button", { name: "Villa", exact: true }).click();
-    check("listing: type Villa → 1", (await cards.count()) === 1);
-    await panel.getByRole("button", { name: "Clear all" }).click();
-    await panel.getByRole("button", { name: "Ready to move", exact: true }).click();
-    check("listing: status Ready to move → 2", (await cards.count()) === 2);
-    await panel.getByRole("button", { name: "Clear all" }).click();
-    await panel.getByLabel("Search").fill("kharadi");
-    check("listing: search 'kharadi' → 1", (await cards.count()) === 1);
-    await panel.getByLabel("Search").fill("zzz");
-    check("listing: no match → empty state", await page.getByText("No projects match these filters.").isVisible());
-    await panel.getByRole("button", { name: "Clear all" }).click();
+    // Listing: grouped, no filter sidebar for a small inventory.
+    check("listing: grouped into for-sale (1) and highlighted (2), no filter panel",
+      (await page.locator("#for-sale .card").count()) === 1 && (await page.locator("#highlighted .card").count()) === 2 && (await page.locator("#filters-panel").count()) === 0);
 
-    // Sort
-    await page.getByLabel("Sort by").selectOption("price-asc");
-    const firstAsc = await cards.first().locator(".card-title").innerText();
-    await page.getByLabel("Sort by").selectOption("price-desc");
-    const firstDesc = await cards.first().locator(".card-title").innerText();
-    check("sort: price low→high starts with B (₹65 lakh), high→low with D (₹3.2 crore)", firstAsc === "Sample Project B" && firstDesc === "Sample Project D", `${firstAsc} / ${firstDesc}`);
-    check("sort: kept in URL", page.url().includes("sort=price-desc"));
-
-    // Shared link restores filters
-    await page.goto(`${A}/projects?config=3+BHK`);
-    await page.waitForTimeout(300);
-    check("listing: shared link ?config=3 BHK → 2", (await cards.count()) === 2);
-
-    // Locality tile → filtered listing
+    // Areas we serve → WhatsApp with the area in the message.
     await page.goto(`${A}/localities`);
-    await page.locator(".loc-tile", { hasText: "Kothrud" }).click();
-    await page.waitForURL("**/projects?**");
-    await page.waitForTimeout(300);
-    check("locality tile → listing filtered to Kothrud", (await cards.count()) === 1 && page.url().includes("locality=Kothrud"));
+    const areaHref = await page.locator(".area-card", { hasText: "Noida Extension" }).locator("a").getAttribute("href");
+    check("area card → WhatsApp message names the area", decodeURIComponent(areaHref ?? "").includes("Noida Extension") && (areaHref ?? "").startsWith("https://wa.me/917010101295"));
+
+    // Contact and About show the office.
+    await page.goto(`${A}/contact`);
+    check("contact: office address, contact person and directions", (await page.getByText("Sector 70, Noida, Uttar Pradesh 201301").first().isVisible()) && (await page.getByText("Anmol Sharma").isVisible()) && (await page.getByRole("link", { name: "Get directions" }).first().getAttribute("href"))?.includes("28.5974,77.3827"));
 
     // Card → project page
     await page.goto(`${A}/projects`);
-    await page.getByRole("link", { name: /View Details for Sample Project A/ }).click();
-    await page.waitForURL("**/projects/sample-project-a");
-    check("card → project page", (await page.locator("h1:visible").innerText()) === "Sample Project A");
+    await page.getByRole("link", { name: /View Details for Sunwest Homes/ }).click();
+    await page.waitForURL("**/projects/sunwest-homes-sector-107-noida");
+    check("card → listing page", (await page.locator("h1:visible").innerText()) === "3 BHK Builder Floor at Sunwest Homes");
     await page.close();
   }
 
-  // ---------- Project page ----------
+  // ---------- Listing page ----------
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(`${A}/projects/sample-project-a`);
-    check("project: facts bar shows price and carpet area", (await page.locator(".facts-bar").innerText()).includes("₹92 lakh") && (await page.locator(".facts-bar").innerText()).includes("680–960 sq ft"));
-    check("project: configuration table", await page.getByRole("cell", { name: "960 sq ft" }).isVisible());
-    check("project: RERA hidden while unverified", (await page.getByRole("heading", { name: "RERA registration" }).count()) === 0);
-    await page.getByRole("button", { name: "Next photograph" }).click();
-    check("project: gallery next → 2 of 2", await page.getByText("2 of 2").isVisible());
-    await page.getByRole("radio", { name: "3 BHK" }).click();
-    check("project: carpet-area drawing switches to 960 sq ft", await page.locator(".area-caption").getByText("960 sq ft").isVisible());
-    check("project: enquiry form locked to this project", (await page.locator("#enquire input[name=property]").inputValue()) === "sample-project-a");
+    await page.goto(`${A}/projects/sunwest-homes-sector-107-noida`);
+    const facts = await page.locator(".facts-bar").innerText();
+    check("listing: price and area shown as on request", facts.includes("Price on request") && facts.includes("On request") && !facts.includes("₹"));
+    check("listing: pending-confirmation note", await page.getByText("Price, area and availability are being confirmed.").first().isVisible());
+    check("listing: property details (facing, floor, furnishing)", (await page.locator(".spec-grid").innerText()).includes("Northwest") && (await page.locator(".spec-grid").innerText()).includes("1st of 6"));
+    check("listing: amenities, features and nearby", (await page.getByText("Rooftop green terrace").isVisible()) && (await page.getByText("Aqua Line Metro").isVisible()) && (await page.getByText("24/7 security").isVisible()));
+    check("listing: no carpet-area drawing without a confirmed area", (await page.locator(".area").count()) === 0);
+    check("listing: RERA hidden while unverified", (await page.getByRole("heading", { name: "RERA registration" }).count()) === 0);
+    check("listing: gallery shows the confirmed photo only", (await page.locator(".pgallery-main img").getAttribute("src"))?.includes("photo-1") && (await page.locator(".pgallery-thumbs").count()) === 0);
+    check("listing: enquiry form locked to this listing", (await page.locator("#enquire input[name=property]").inputValue()) === "sunwest-homes-sector-107-noida");
     const wa = await page.locator("#enquire a.btn-wa").getAttribute("href");
-    check("project: WhatsApp message names the project", decodeURIComponent(wa ?? "").includes("Sample Project A"));
-    check("project: similar projects listed", (await page.locator(".similar .card").count()) === 3);
+    check("listing: WhatsApp message names the property", decodeURIComponent(wa ?? "").includes("Sunwest Homes"));
+    check("listing: other projects suggested", (await page.locator(".similar .card").count()) === 2);
+    await page.goto(`${A}/projects/eon`);
+    check("highlighted project page: no price, no configuration table", (await page.locator(".config-table").count()) === 0 && (await page.locator(".facts-bar").innerText()).includes("Price on request"));
     await page.close();
   }
 
   // ---------- Enquiry: no backend configured ----------
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(`${A}/contact?property=sample-project-c#enquire`);
+    await page.goto(`${A}/contact?property=cyberthum#enquire`);
     await page.waitForTimeout(300);
     const sel = page.locator("#enquire select[name=property]");
-    check("contact: ?property= preselects the project", (await sel.inputValue()) === "sample-project-c");
+    check("contact: ?property= preselects the project", (await sel.inputValue()) === "cyberthum");
     await page.locator("#enquire input[name=name]").fill("Test Buyer");
     await page.locator("#enquire input[name=phone]").fill("98765 43210");
     await page.getByRole("button", { name: "Send request" }).click();
@@ -220,20 +202,20 @@ try {
     check("enquiry: success only after backend accepted", !!sent && sent.phone === "+919876543210" && sent.property.slug === "not-sure" && sent.preferredDate === "2099-01-15");
 
     // From a project page: the project is sent.
-    await page.goto(`${W}/projects/sample-project-e`);
+    await page.goto(`${W}/projects/eon`);
     const pf = page.locator("#enquire");
     await pf.locator("input[name=name]").fill("Ravi Kumar");
     await pf.locator("input[name=phone]").fill("9123456780");
     const b2 = received.length;
     await pf.getByRole("button", { name: "Send request" }).click();
     await page.getByText("Request received").waitFor({ timeout: 5000 });
-    check("enquiry from project page carries the project", received[b2]?.property.slug === "sample-project-e");
+    check("enquiry from project page carries the project", received[b2]?.property.slug === "eon");
 
     // Backend failure → no success.
     await page.goto(`${W}/contact#enquire`);
     await form.locator("input[name=name]").fill("Fail Case");
     await form.locator("input[name=phone]").fill("9123456789");
-    await form.locator("select[name=property]").selectOption("sample-project-b");
+    await form.locator("select[name=property]").selectOption("sunwest-homes-sector-107-noida");
     await form.getByRole("button", { name: "Send request" }).click();
     await page.getByText("Your request was not sent.").waitFor({ timeout: 5000 });
     check("enquiry: backend error → 'not sent', no success", (await page.getByText("Request received").count()) === 0);

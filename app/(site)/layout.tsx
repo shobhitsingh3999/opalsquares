@@ -19,14 +19,14 @@ const satoshi = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL ?? "https://opalsquare.in"),
   title: {
-    default: `${site.brand.name} Realty | Real estate advisory`,
-    template: `%s | ${site.brand.name} Realty`,
+    default: `${site.brand.legalName} | Real estate in Noida`,
+    template: `%s | ${site.brand.legalName}`,
   },
-  description: `${site.brand.description} Browse projects, compare carpet area and price, and book a site visit with an advisor.`,
+  description: `${site.brand.description} Buy, sell, rent or invest in residential and commercial property in Noida and Greater Noida.`,
   // Keep the preview build out of search results.
   robots: site.previewMode ? { index: false, follow: false } : undefined,
   icons: site.brand.logo ? { icon: site.brand.logo.mark.src, apple: site.brand.logo.mark.src } : undefined,
-  openGraph: { type: "website", siteName: `${site.brand.name} Realty`, images: [site.hero.image.src] },
+  openGraph: { type: "website", siteName: site.brand.legalName, images: [site.hero.image.src] },
 };
 
 export const viewport: Viewport = {
@@ -38,8 +38,12 @@ export const viewport: Viewport = {
 const orgJsonLd = {
   "@context": "https://schema.org",
   "@type": "RealEstateAgent",
-  name: `${site.brand.name} Realty`,
+  name: site.brand.legalName,
   description: site.brand.description,
+  areaServed: site.about.serviceAreas,
+  ...(site.contact.officeAddress
+    ? { address: { "@type": "PostalAddress", streetAddress: site.contact.officeAddress, addressLocality: "Noida", addressRegion: "Uttar Pradesh", postalCode: "201301", addressCountry: "IN" } }
+    : {}),
   ...(site.contact.whatsapp ? { telephone: site.contact.whatsapp } : {}),
   ...(site.contact.email ? { email: site.contact.email } : {}),
   sameAs: [site.contact.social.instagram, site.contact.social.linkedin].filter(Boolean),
@@ -52,7 +56,7 @@ export default function SiteLayout({ children }: Readonly<{ children: React.Reac
         <a className="skip" href="#main">Skip to content</a>
         {site.previewMode && (
           <p className="preview-banner" role="note">
-            Preview build: listings, prices, areas and images are sample data, not real projects.
+            Preview build: some prices, areas and RERA details are pending confirmation, and banner images are placeholders.
           </p>
         )}
         <Header />

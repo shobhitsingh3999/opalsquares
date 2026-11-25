@@ -48,3 +48,6 @@ next-env.d.ts
 
 # reference material
 /ref/
+
+# Source data pack with unconfirmed figures (kept private; see README)
+/content/source/

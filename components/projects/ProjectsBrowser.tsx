@@ -35,6 +35,9 @@ export default function ProjectsBrowser({ initial = EMPTY_FILTERS }: { initial?:
     history.replaceState(null, "", `/projects${s ? `?${s}` : ""}`);
   };
 
+  // With a small inventory, filters add nothing: show the items grouped by kind instead.
+  if (site.projects.length < site.filtersFromCount) return <Grouped />;
+
   const results = sortProjects(site.projects.filter((p) => matches(p, filters)), filters.sort);
   const activeCount = FILTER_KEYS.filter((k) => k !== "sort" && filters[k]).length;
 
@@ -137,5 +140,31 @@ function Select({ label, value, onChange, options, all }: {
         {options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
       </select>
     </label>
+  );
+}
+
+function Grouped() {
+  const groups = [
+    { id: "for-sale", title: "Properties for sale", items: site.projects.filter((p) => p.kind === "listing") },
+    { id: "highlighted", title: "Highlighted projects", items: site.projects.filter((p) => p.kind === "project") },
+  ].filter((g) => g.items.length);
+  return (
+    <div className="grouped">
+      {groups.map((g) => (
+        <section key={g.id} id={g.id} aria-labelledby={`${g.id}-title`} className="group">
+          <div className="results-bar">
+            <h2 id={`${g.id}-title`} className="h3">{g.title}</h2>
+            <p>{g.items.length} {g.items.length === 1 ? "item" : "items"}</p>
+          </div>
+          <div className="cards">
+            {g.items.map((p, i) => <ProjectCard key={p.slug} project={p} priority={i < 2} />)}
+          </div>
+        </section>
+      ))}
+      <div className="empty">
+        <p className="empty-title">Looking for something else?</p>
+        <p>We deal in flats, builder floors, villas, plots and commercial property across Noida and Greater Noida. <Link href="/contact#enquire">Tell us what you need</Link> and we will share current options.</p>
+      </div>
+    </div>
   );
 }

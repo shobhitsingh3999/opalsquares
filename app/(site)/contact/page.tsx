@@ -3,15 +3,15 @@ import { site } from "@/site.config";
 import { telHref, whatsappHref } from "@/lib/format";
 import PageHero from "@/components/PageHero";
 import EnquiryForm from "@/components/EnquiryForm";
-import { IconCheck, IconInstagram, IconLinkedIn, IconPhone, IconWhatsApp } from "@/components/Icons";
+import { IconCheck, IconInstagram, IconLinkedIn, IconPhone, IconPin, IconWhatsApp } from "@/components/Icons";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Book a site visit or talk to an Opal Square advisor on WhatsApp.",
+  description: "Visit our Sector 70, Noida office, message us on WhatsApp or book a site visit.",
 };
 
 export default function ContactPage() {
-  const { phone, whatsapp, email, officeAddress, hours, social } = site.contact;
+  const { phone, whatsapp, email, officeAddress, hours, social, contactPerson, mapUrl } = site.contact;
   const prettyWa = whatsapp?.replace(/^\+91(\d{5})(\d{5})$/, "+91 $1 $2");
   return (
     <>
@@ -25,7 +25,7 @@ export default function ContactPage() {
         <div className="container contact-grid">
           <div className="contact-info">
             <h2 className="h2">Talk to an advisor</h2>
-            <p className="lead">The quickest way to reach us is WhatsApp. Share the project or locality you are interested in.</p>
+            <p className="lead">The quickest way to reach us is WhatsApp. Tell us whether you want to buy, sell, rent or invest, and the area you are interested in.</p>
             <ul className="contact-cards">
               {whatsapp && (
                 <li>
@@ -49,7 +49,20 @@ export default function ContactPage() {
                 </li>
               )}
               {officeAddress && (
-                <li><span className="contact-icon">⌂</span><div><p className="contact-label">Office</p><p>{officeAddress}</p></div></li>
+                <li>
+                  <span className="contact-icon"><IconPin size={20} /></span>
+                  <div>
+                    <p className="contact-label">Office</p>
+                    <p>{officeAddress}</p>
+                    {mapUrl && <a className="contact-map" href={mapUrl} target="_blank" rel="noopener">Get directions</a>}
+                  </div>
+                </li>
+              )}
+              {contactPerson && (
+                <li>
+                  <span className="contact-icon">{contactPerson.charAt(0)}</span>
+                  <div><p className="contact-label">Contact person</p><p className="contact-strong">{contactPerson}</p></div>
+                </li>
               )}
               {hours && (
                 <li><span className="contact-icon">◷</span><div><p className="contact-label">Hours</p><p>{hours}</p></div></li>
@@ -65,9 +78,9 @@ export default function ContactPage() {
               </div>
             )}
             <ul className="visit-points">
-              <li><IconCheck size={16} /> We confirm availability before you travel</li>
-              <li><IconCheck size={16} /> An advisor meets you at the site</li>
-              <li><IconCheck size={16} /> Ask for the full cost sheet in advance</li>
+              <li><IconCheck size={16} /> Buying, selling, rentals and investment advice</li>
+              <li><IconCheck size={16} /> Residential and commercial property</li>
+              <li><IconCheck size={16} /> Noida, Greater Noida and Yamuna Expressway</li>
             </ul>
           </div>
           <div className="contact-form-card" id="enquire">

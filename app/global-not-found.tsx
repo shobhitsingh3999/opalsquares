@@ -14,7 +14,7 @@ const satoshi = localFont({
   variable: "--font-satoshi",
 });
 
-export const metadata: Metadata = { title: "Page not found | Opal Square Realty" };
+export const metadata: Metadata = { title: "Page not found | Opal Square Properties" };
 
 export default function GlobalNotFound() {
   return (

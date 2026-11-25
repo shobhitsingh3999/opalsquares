@@ -8,6 +8,9 @@ import { IconCheck, IconSearch } from "../Icons";
 export default function HomeHero() {
   const { headline, supporting, image, highlights } = site.hero;
   const opts = filterOptions(site.projects);
+  const showSearch = site.projects.length >= site.filtersFromCount;
+  const listings = site.projects.filter((p) => p.kind === "listing").length;
+  const highlighted = site.projects.filter((p) => p.kind === "project").length;
 
   return (
     <section className="hero" aria-labelledby="hero-title">
@@ -23,6 +26,7 @@ export default function HomeHero() {
           </div>
         </div>
 
+        {showSearch ? (
         <form className="hero-search" action="/projects" method="get" role="search" aria-label="Search properties">
           <label className="hs-field hs-q">
             <span>Search</span>
@@ -53,6 +57,14 @@ export default function HomeHero() {
             <IconSearch size={18} /> Search
           </button>
         </form>
+        ) : (
+          <nav className="hero-quick" aria-label="Quick links">
+            <Link href="/projects"><strong>{listings}</strong> {listings === 1 ? "property" : "properties"} for sale</Link>
+            <Link href="/projects#highlighted"><strong>{highlighted}</strong> highlighted {highlighted === 1 ? "project" : "projects"}</Link>
+            <Link href="/services">Buy · Sell · Rent · Invest</Link>
+            <Link href="/contact#enquire">Book a site visit</Link>
+          </nav>
+        )}
 
         <ul className="hero-highlights">
           {highlights.map((h) => (

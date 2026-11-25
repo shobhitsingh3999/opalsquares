@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = site.projects.find((x) => x.slug === slug);
   if (!p) return {};
   return {
-    title: `${p.name}, ${p.locality}`,
+    title: `${p.title ?? p.name}, ${p.locality}`,
     description: `${p.name} in ${p.locality}, ${p.city}: ${configSummary(p)}. ${priceLabel(p)}. ${statusLabel(p) ?? ""}`.trim(),
     openGraph: p.images[0] ? { images: [p.images[0].src] } : undefined,
   };
@@ -44,12 +44,12 @@ export default async function ProjectPage({ params }: Props) {
   const { whatsapp } = site.contact;
 
   const facts = [
-    ["Starting price", priceLabel(p).replace(/^From /, "")],
+    ["Price", priceLabel(p)],
     ["Configuration", configSummary(p)],
-    ["Carpet area", areaText],
-    ["Possession", p.status === "Ready to move" ? "Ready to move" : p.possession ?? "To be confirmed"],
-    ["Property type", p.propertyType],
-    ["Developer", p.developer ?? "To be confirmed"],
+    ["Area", areaText],
+    ["Status", p.status === "Ready to move" ? "Ready to move" : p.possession ? `Possession ${p.possession}` : p.status ?? "To be confirmed"],
+    ["Property type", p.kind === "project" ? "Highlighted project" : p.propertyType],
+    ...(p.developer ? [["Developer", p.developer]] : []),
   ];
 
   return (
@@ -60,12 +60,12 @@ export default async function ProjectPage({ params }: Props) {
             <ol className="crumbs crumbs-dark">
               <li><Link href="/">Home</Link></li>
               <li><Link href="/projects">Projects</Link></li>
-              <li><span aria-current="page">{p.name}</span></li>
+              <li><span aria-current="page">{p.title ?? p.name}</span></li>
             </ol>
           </nav>
           <div className="project-title-row">
             <div>
-              <h1 className="project-title">{p.name}</h1>
+              <h1 className="project-title">{p.title ?? p.name}</h1>
               <p className="project-loc">
                 <IconPin size={16} /> {p.location.address ?? `${p.locality}, ${p.city}`}
               </p>
@@ -78,6 +78,7 @@ export default async function ProjectPage({ params }: Props) {
           {p.preview && (
             <p className="details-note" role="note">Preview listing. Every figure and photograph on this page is a placeholder.</p>
           )}
+          {p.pendingNote && <p className="details-note" role="note">{p.pendingNote}</p>}
           <ProjectGallery images={p.images} name={p.name} />
           <dl className="facts-bar">
             {facts.map(([k, v]) => (
@@ -95,6 +96,18 @@ export default async function ProjectPage({ params }: Props) {
               <p className="lead">{p.summary}</p>
             </section>
 
+            {p.specs && p.specs.length > 0 && (
+              <section aria-labelledby="specs">
+                <h2 id="specs" className="h3">Property details</h2>
+                <dl className="spec-grid">
+                  {p.specs.map((x) => (
+                    <div key={x.label}><dt>{x.label}</dt><dd>{x.value}</dd></div>
+                  ))}
+                </dl>
+              </section>
+            )}
+
+            {p.configurations.length > 0 && (
             <section aria-labelledby="cfg">
               <h2 id="cfg" className="h3">Configurations and prices</h2>
               <div className="table-wrap">
@@ -129,17 +142,29 @@ export default async function ProjectPage({ params }: Props) {
                 Prices are starting figures. The final cost may add GST, stamp duty, registration, parking and deposits. {hasPlans ? "" : "Floor plans are shared on request."}
               </p>
             </section>
+            )}
 
-            <section aria-labelledby="area">
-              <h2 id="area" className="h3">What the carpet area looks like</h2>
-              <AreaSquare project={p} />
-            </section>
+            {areas.length > 0 && (
+              <section aria-labelledby="area">
+                <h2 id="area" className="h3">What the carpet area looks like</h2>
+                <AreaSquare project={p} />
+              </section>
+            )}
 
             {p.amenities.length > 0 && (
               <section aria-labelledby="am">
                 <h2 id="am" className="h3">Amenities</h2>
                 <ul className="amenity-grid">
                   {p.amenities.map((a) => <li key={a}><IconCheck size={16} /> {a}</li>)}
+                </ul>
+              </section>
+            )}
+
+            {p.features && p.features.length > 0 && (
+              <section aria-labelledby="feat">
+                <h2 id="feat" className="h3">Development features</h2>
+                <ul className="amenity-grid">
+                  {p.features.map((a) => <li key={a}><IconCheck size={16} /> {a}</li>)}
                 </ul>
               </section>
             )}
@@ -151,7 +176,7 @@ export default async function ProjectPage({ params }: Props) {
                 <p><a className="link-strong" href={p.location.mapUrl} target="_blank" rel="noopener">Open in Google Maps</a></p>
               )}
               {p.location.nearby.length > 0 && (
-                <ul className="nearby">{p.location.nearby.map((n) => <li key={n}>{n}</li>)}</ul>
+                <ul className="nearby">{p.location.nearby.map((n) => <li key={n}><IconPin size={14} /> {n}</li>)}</ul>
               )}
               <p><Link className="link-strong" href={projectsUrl({ locality: p.locality })}>More projects in {p.locality}</Link></p>
             </section>
@@ -168,7 +193,7 @@ export default async function ProjectPage({ params }: Props) {
 
           <aside className="project-aside" id="enquire" aria-label={`Enquire about ${p.name}`}>
             <div className="aside-card">
-              <p className="aside-price"><span>Starting price</span>{priceLabel(p).replace(/^From /, "")}</p>
+              <p className="aside-price"><span>Price</span>{priceLabel(p)}</p>
               <EnquiryForm defaultProperty={p.slug} lockProperty title="Book a site visit" />
             </div>
           </aside>

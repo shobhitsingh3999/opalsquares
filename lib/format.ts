@@ -23,8 +23,11 @@ export function priceLabel(p: Project): string {
 }
 
 export function configSummary(p: Project): string {
-  return p.configurations.map((c) => c.label).join(", ");
+  return p.configurations.length ? p.configurations.map((c) => c.label).join(", ") : "On request";
 }
+
+/** Images narrower than this are shown at their natural size, centred, instead of being stretched to fill. */
+export const SMALL_IMAGE = 480;
 
 export function statusLabel(p: Project): string | null {
   if (p.status === "Ready to move") return "Ready to move";

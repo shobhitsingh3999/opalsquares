@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/site.config";
-import { localities, projectsUrl } from "@/lib/catalog";
+import { localities } from "@/lib/catalog";
 import { priceLabel } from "@/lib/format";
 import { projectHref } from "@/lib/nav";
 import PageHero from "@/components/PageHero";
-import { LocalityTiles, CtaBand } from "@/components/home/HomeSections";
+import { CtaBand, ServiceAreas } from "@/components/home/HomeSections";
 
 export const metadata: Metadata = {
   title: "Localities",
-  description: "Explore the localities where Opal Square lists projects and see every project in each area.",
+  description: "Opal Square Properties works across Noida, Greater Noida, Noida Extension, Greater Noida West, Techzone 4 and the Yamuna Expressway.",
 };
 
 export default function LocalitiesPage() {
@@ -17,35 +17,34 @@ export default function LocalitiesPage() {
   return (
     <>
       <PageHero
-        title="Localities"
-        intro="Choose an area to see every project we list there, with prices and possession at a glance."
+        title="Areas we serve"
+        intro="Residential and commercial property across Noida, Greater Noida and the Yamuna Expressway."
         crumbs={[{ label: "Localities" }]}
         image="/images/project-9.webp"
       />
-      <LocalityTiles heading={false} />
-      <section className="section section-tight loc-table-section" aria-labelledby="by-locality">
-        <div className="container">
-          <h2 id="by-locality" className="h2">Projects by locality</h2>
-          <div className="loc-lists">
-            {locs.map((l) => {
-              const list = site.projects.filter((p) => p.locality === l.name);
-              return (
+      <ServiceAreas heading={false} />
+      {locs.length > 0 && (
+        <section className="section section-tight loc-table-section" aria-labelledby="by-locality">
+          <div className="container">
+            <h2 id="by-locality" className="h2">Current listings by sector</h2>
+            <div className="loc-lists">
+              {locs.map((l) => (
                 <div key={l.name} className="loc-list">
-                  <h3 className="h3"><Link href={projectsUrl({ locality: l.name })}>{l.name}, {l.city}</Link></h3>
+                  <h3 className="h3">{l.name}, {l.city}</h3>
                   <ul>
-                    {list.map((p) => (
+                    {site.projects.filter((p) => p.locality === l.name).map((p) => (
                       <li key={p.slug}>
-                        <Link href={projectHref(p.slug)}>{p.name}</Link>
-                        <span>{p.propertyType} · {priceLabel(p)}</span>
+                        <Link href={projectHref(p.slug)}>{p.title ?? p.name}</Link>
+                        <span>{p.kind === "project" ? "Highlighted project" : p.propertyType} · {priceLabel(p)}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
       <CtaBand />
     </>
   );
