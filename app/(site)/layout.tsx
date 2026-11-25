@@ -1,20 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
 import { site } from "@/site.config";
+import { fontVars } from "@/lib/fonts";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MobileContactBar from "@/components/MobileContactBar";
 import "./site.css";
 
-const satoshi = localFont({
-  src: [
-    { path: "../fonts/Satoshi-400.woff2", weight: "400", style: "normal" },
-    { path: "../fonts/Satoshi-500.woff2", weight: "500", style: "normal" },
-    { path: "../fonts/Satoshi-700.woff2", weight: "700", style: "normal" },
-  ],
-  variable: "--font-satoshi",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL ?? "https://opalsquare.in"),
@@ -51,7 +42,7 @@ const orgJsonLd = {
 
 export default function SiteLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-IN" className={satoshi.variable}>
+    <html lang="en-IN" className={fontVars}>
       <body>
         <a className="skip" href="#main">Skip to content</a>
         {site.previewMode && (

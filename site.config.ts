@@ -18,9 +18,8 @@
 import type { SiteConfig } from "@/lib/types";
 
 export const site: SiteConfig = {
-  // Keeps the site out of search engines and shows the preview banner.
-  // Turn off once pending details are confirmed and the theme images are replaced.
-  previewMode: true,
+  // true = preview banner, placeholder slots and no search-engine indexing.
+  previewMode: false,
 
   brand: {
     name: "Opal Square",
@@ -65,7 +64,7 @@ export const site: SiteConfig = {
   },
 
   about: {
-    statement: "Real estate and investment advice in Noida and Greater Noida",
+    statement: "Property advice for Noida and Greater Noida",
     detail:
       "Opal Square Properties is a real estate and investment advisory firm based in Sector 70, Noida. We help clients buy, sell, rent, and explore investment opportunities across residential and commercial properties in Noida and Greater Noida.",
     services: [
@@ -249,8 +248,12 @@ export const site: SiteConfig = {
       summary:
         "Cyberthum is a project in Sector 140A, Noida. Enquire for current configurations, prices, availability and RERA details.",
       configurations: [],
-      // Directory thumbnail (180×199). Replace with a larger official image when available.
-      images: [{ src: "/images/highlighted/cyberthum.jpg", alt: "Cyberthum, Sector 140A, Noida", width: 180, height: 199 }],
+      // Official project renders from the portal listing linked to Opal Square's profile. Confirm permission.
+      images: [
+        { src: "/images/highlighted/cyberthum-2.jpg", alt: "Cyberthum, Sector 140A, Noida: aerial view of the towers", width: 1800, height: 1312, credit: "Artist's impression" },
+        { src: "/images/highlighted/cyberthum-1.jpg", alt: "Cyberthum twin towers with the sphere, seen from street level", width: 1000, height: 1110, credit: "Artist's impression" },
+        { src: "/images/highlighted/cyberthum-3.jpg", alt: "Cyberthum towers and podium at night", width: 945, height: 709, credit: "Artist's impression" },
+      ],
       amenities: [],
       location: { address: "Sector 140A, Noida", mapUrl: null, nearby: [] },
       rera: null,
@@ -271,8 +274,12 @@ export const site: SiteConfig = {
       summary:
         "EON is a project in Sector 140A, Noida. Enquire for current configurations, prices, availability and RERA details.",
       configurations: [],
-      // Directory thumbnail (200×109). Replace with a larger official image when available.
-      images: [{ src: "/images/highlighted/eon.jpg", alt: "EON, Sector 140A, Noida", width: 200, height: 109 }],
+      // Official project renders from the portal listing linked to Opal Square's profile. Confirm permission.
+      images: [
+        { src: "/images/highlighted/eon-1.jpg", alt: "EON, Sector 140A, Noida: towers and plaza", width: 1200, height: 675, credit: "Artist's impression" },
+        { src: "/images/highlighted/eon-2.jpg", alt: "EON towers seen from the central courtyard", width: 1200, height: 675, credit: "Artist's impression" },
+        { src: "/images/highlighted/eon-3.jpg", alt: "EON entrance and towers from street level", width: 700, height: 382, credit: "Artist's impression" },
+      ],
       amenities: [],
       location: { address: "Sector 140A, Noida", mapUrl: null, nearby: [] },
       rera: null,

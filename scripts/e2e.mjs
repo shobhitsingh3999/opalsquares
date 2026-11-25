@@ -164,6 +164,12 @@ try {
     const wa = await page.locator("#enquire a.btn-wa").getAttribute("href");
     check("listing: WhatsApp message names the property", decodeURIComponent(wa ?? "").includes("Sunwest Homes"));
     check("listing: other projects suggested", (await page.locator(".similar .card").count()) === 2);
+    for (const [slug, n] of [["cyberthum", 3], ["eon", 3]]) {
+      await page.goto(`${A}/projects/${slug}`);
+      const imgs = await page.locator(".pgallery-thumbs img").count();
+      check(`${slug}: gallery has ${n} images`, imgs === n, `${imgs}`);
+    }
+    check("no preview banner", (await page.locator(".preview-banner").count()) === 0);
     await page.goto(`${A}/projects/eon`);
     check("highlighted project page: no price, no configuration table", (await page.locator(".config-table").count()) === 0 && (await page.locator(".facts-bar").innerText()).includes("Price on request"));
     await page.close();

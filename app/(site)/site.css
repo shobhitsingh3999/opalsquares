@@ -819,3 +819,172 @@ fieldset.field legend { font-size: 14px; font-weight: 700; color: var(--ink); ma
 .contact-strong { font-weight: 700; color: var(--ink); }
 
 .pgallery-credit { position: absolute; left: 14px; bottom: 14px; background: rgba(0, 0, 0, 0.7); color: var(--white); font-size: 13px; padding: 5px 10px; border-radius: 40px; }
+
+/* =====================================================================
+   Typography system
+   Display serif (Cormorant Garamond) for headings, Satoshi for UI and text.
+   One fluid scale: every size grows smoothly from 360px to 1440px wide.
+   ===================================================================== */
+:root {
+  --font-serif: var(--font-display), "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --fs-display: clamp(2.6rem, 1.7rem + 3.8vw, 5rem);      /* 42 → 80  hero */
+  --fs-h1: clamp(2.35rem, 1.75rem + 2.4vw, 3.75rem);      /* 38 → 60  page titles */
+  --fs-h2: clamp(2.05rem, 1.6rem + 1.9vw, 3.25rem);       /* 33 → 52  section titles */
+  --fs-h3: clamp(1.45rem, 1.3rem + 0.6vw, 1.85rem);       /* 23 → 30  sub-headings, cards */
+  --fs-h4: clamp(1.125rem, 1.07rem + 0.25vw, 1.25rem);    /* 18 → 20  small headings (sans) */
+  --fs-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);     /* 17 → 20 */
+  --fs-body: clamp(1rem, 0.97rem + 0.12vw, 1.0625rem);    /* 16 → 17 */
+  --fs-small: 0.875rem;                                    /* 14 */
+  --fs-xs: 0.8125rem;                                      /* 13, the minimum */
+  --lh-tight: 1.06;
+  --lh-heading: 1.14;
+  --lh-text: 1.68;
+}
+
+html { font-size: 100%; }
+body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-text);
+  font-kerning: normal;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern", "liga", "calt";
+}
+p, li, dd, blockquote { text-wrap: pretty; }
+h1, h2, h3, h4, .h2, .h3, .card-title, .project-title, .footer-cta-title, .form-status-title, .empty-title { text-wrap: balance; }
+
+/* ----- Serif display headings ----- */
+.hero h1,
+.page-hero h1,
+.project-title,
+.h2,
+.h3,
+.card-title,
+.service-title,
+.footer-cta-title,
+.cta-band .h2,
+.form-status-title,
+.empty-title,
+.loc-name,
+.area-name,
+.stats dd,
+.about-stats dd,
+.aside-price,
+.office-address,
+.process-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-variant-numeric: lining-nums proportional-nums;
+  letter-spacing: -0.012em;
+  font-feature-settings: "kern", "liga", "dlig", "lnum";
+}
+
+.hero h1 { font-size: var(--fs-display); line-height: var(--lh-tight); letter-spacing: -0.02em; font-weight: 600; max-width: 16ch; }
+.page-hero h1 { font-size: var(--fs-h1); line-height: var(--lh-tight); letter-spacing: -0.015em; max-width: 22ch; }
+.project-title { font-size: var(--fs-h1); line-height: var(--lh-tight); letter-spacing: -0.015em; }
+.h2 { font-size: var(--fs-h2); line-height: var(--lh-heading); }
+.h3 { font-size: var(--fs-h3); line-height: 1.2; }
+.card-title { font-size: var(--fs-h3); line-height: 1.15; margin-top: 8px; }
+.service-title { font-size: clamp(1.6rem, 1.35rem + 1vw, 2.25rem); line-height: 1.12; font-weight: 600; }
+.footer-cta-title { font-size: var(--fs-h2); line-height: var(--lh-heading); font-weight: 600; }
+.cta-band .h2 { font-size: var(--fs-h2); }
+.form-status-title, .empty-title { font-size: var(--fs-h3); line-height: 1.2; }
+.loc-name, .area-name { font-size: var(--fs-h3); line-height: 1.15; }
+.stats dd, .about-stats dd { font-size: clamp(2.25rem, 1.9rem + 1.4vw, 3.25rem); line-height: 1; font-weight: 600; }
+.aside-price { font-size: clamp(1.75rem, 1.6rem + 0.6vw, 2.125rem); line-height: 1.15; }
+.aside-price span { font-family: var(--font); letter-spacing: 0.04em; text-transform: uppercase; font-size: var(--fs-xs); font-weight: 700; color: #777; }
+.office-address { font-size: var(--fs-h4); font-weight: 600; line-height: 1.45; font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.45rem); }
+.process-title { font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2rem); font-weight: 600; }
+
+/* A touch of italic for the hero's supporting line */
+.hero-lead { font-size: var(--fs-lead); line-height: 1.6; max-width: 54ch; }
+.page-hero-intro, .lead, .section-lead { font-size: var(--fs-lead); line-height: 1.62; }
+
+/* ----- Small sans headings ----- */
+.why-card h3, .form-title, .filters-title, .details-heading, .services dt {
+  font-family: var(--font); font-size: var(--fs-h4); font-weight: 700; line-height: 1.3; letter-spacing: -0.005em;
+}
+
+/* ----- Labels and eyebrows: tracked small caps ----- */
+.kicker {
+  font-size: var(--fs-xs); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; line-height: 1.3;
+}
+.kicker::after { width: 48px; }
+.card-type, .hs-field > span, .contact-label, .footer-head, .facts-bar dt, .spec-grid dt, .card-facts dt, .card-price span, .config-table thead th {
+  font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700;
+}
+.card-preview { text-transform: none; letter-spacing: 0; }
+.card-facts dt, .facts-bar dt, .spec-grid dt { color: #7a7a7a; }
+
+/* ----- Buttons and navigation ----- */
+.btn { font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+.btn-sm { font-size: 0.75rem; letter-spacing: 0.09em; min-height: 44px; }
+#site-nav a { font-size: 0.9375rem; font-weight: 500; letter-spacing: 0.01em; }
+@media (max-width: 1080px) {
+  #site-nav ul a { font-family: var(--font-serif); font-size: 1.75rem; font-weight: 600; letter-spacing: -0.01em; padding: 14px 0; }
+}
+.link-arrow, .area-link, .link-strong, .contact-map, .footer-cta { font-size: var(--fs-small); letter-spacing: 0.04em; }
+.chip { font-size: var(--fs-small); font-weight: 500; }
+.pill, .type-tab { font-size: var(--fs-small); }
+
+/* ----- Numbers: aligned figures where they are compared ----- */
+.card-price, .facts-bar dd, .spec-grid dd, .config-table td, .config-table th, .card-facts dd, .results-bar, .pgallery-count {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.card-price { font-family: var(--font); font-size: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem); font-weight: 700; letter-spacing: -0.005em; }
+.facts-bar dd { font-size: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem); }
+
+/* ----- Body copy rhythm ----- */
+.card-loc, .card-facts dd, .details-summary, .service-desc, .why-card p, .area-card p, .faq p, .footer-col a, .footer-brand p { line-height: 1.6; }
+.faq summary { font-family: var(--font-serif); font-size: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem); font-weight: 600; letter-spacing: -0.005em; line-height: 1.3; }
+.faq p { font-size: var(--fs-body); }
+.service-desc { font-size: var(--fs-body); }
+.small-note, .field-hint, .footer-bottom, .card-pending, .details-note { font-size: var(--fs-xs); line-height: 1.55; }
+.card-preview, .footer-credit { font-size: var(--fs-xs); }
+.crumbs { font-size: var(--fs-xs); letter-spacing: 0.06em; text-transform: uppercase; }
+.preview-banner { font-size: var(--fs-xs); }
+
+/* ----- Phones: keep headings generous but never cramped ----- */
+@media (max-width: 480px) {
+  .hero h1 { max-width: none; }
+  .hero-lead { font-size: 1.0625rem; }
+  .card-title { font-size: 1.5rem; }
+  .btn { letter-spacing: 0.08em; }
+}
+
+/* ----- Typography refinements after review ----- */
+.btn-sm { font-size: var(--fs-xs); }
+.field-locked span { font-size: var(--fs-xs); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; }
+.hero-quick a { font-size: var(--fs-small); }
+@media (max-width: 600px) {
+  .hero-actions { display: grid; grid-template-columns: 1fr; }
+  .hero-actions .btn { width: 100%; }
+  .hero-quick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hero-quick a { min-height: 44px; padding: 0 12px; justify-content: center; text-align: center; font-size: var(--fs-xs); }
+  .hero-quick a:nth-child(n + 3) { display: none; }
+  .hero-highlights { display: none; }
+  .hero { min-height: auto; padding-bottom: 32px; }
+}
+
+/* ----- A lone card becomes a wide feature card on larger screens ----- */
+@media (min-width: 900px) {
+  .showcase .cards:has(> .card:only-child), .group .cards:has(> .card:only-child) { grid-template-columns: 1fr; }
+  .card:only-child { flex-direction: row; min-height: 420px; }
+  .card:only-child .card-media { flex: 0 0 56%; aspect-ratio: auto; }
+  .card:only-child .card-media img { height: 100%; }
+  .card:only-child .card-body { padding: clamp(28px, 3vw, 44px); justify-content: center; }
+  .card:only-child .card-title { font-size: var(--fs-h2); line-height: 1.1; }
+  .card:only-child .card-facts { margin: 24px 0; }
+}
+
+/* ----- Service areas: two compact columns on phones ----- */
+@media (max-width: 600px) {
+  .area-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .area-card { padding: 16px 14px; gap: 6px; }
+  .area-icon { width: 36px; height: 36px; }
+  .area-name { font-size: 1.2rem; }
+  .area-link { font-size: var(--fs-xs); letter-spacing: 0.02em; min-height: 44px; line-height: 1.3; }
+}
+
+.area-card .area-name { line-height: 1.15; }
